@@ -8,23 +8,23 @@
   <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap');
 
- :root{
-  --bg:#CABDB5; 
-  --card:#FFFFFF;
-  --card-soft:#FFFFFF;
-  --border:#6B5F59; 
-  --text:#6B5F59;
-  --muted:#9C8F88;
-  --stone:#FFFFFF;
-  --dusty:#FFFFFF;
-  --latte:#6B5F59;
-  --danger:#9A6666;
-  --ok:#6B5F59;
-  --radius:22px;
-  --radius-sm:16px;
-  --shadow:0 10px 20px rgba(0,0,0,.05);
-  --shadow-sm:0 4px 10px rgba(0,0,0,.04);
-}
+  :root{
+    --bg:#CABDB5;
+    --card:#FFFCFA;
+    --card-soft:#F2ECE7;
+    --border:#CDBFB5;
+    --text:#5D514B;
+    --muted:#887B75;
+    --stone:#E8E1DC;
+    --dusty:#DDD5D0;
+    --latte:#8C7E77;
+    --danger:#9A6666;
+    --ok:#5E5752;
+    --radius:22px;
+    --radius-sm:16px;
+    --shadow:0 10px 28px rgba(73, 61, 54, .08);
+    --shadow-sm:0 6px 16px rgba(73, 61, 54, .05);
+  }
 
   *{box-sizing:border-box}
   html,body{ overscroll-behavior:none; }
@@ -62,7 +62,7 @@
     border-radius:var(--radius);
     padding:18px 16px;
     margin:14px 0;
-    border:1px solid #E5E5E5;
+    border:1px solid rgba(205,191,181,.52);
     box-shadow:
       0 14px 32px rgba(73, 61, 54, .06),
       0  2px 10px rgba(73, 61, 54, .03);
@@ -120,7 +120,7 @@
     padding:14px 14px;
     font-size:18px;
     font-weight:600;
-    background:#FFFFFF;
+    background:#F8F4F1;
     color:var(--text);
     outline:none;
     box-shadow:0 1px 0 rgba(73,61,54,.03) inset;
@@ -133,10 +133,10 @@
     box-shadow:0 0 0 4px rgba(140,126,119,.14);
   }
 
-.input[readonly]{
-  background:#F5F5F5;
-  color:#6B5F59;
-}
+  .input[readonly]{
+    background:#EDE5DF;
+    color:#6B5F59;
+  }
 
   .grid2{
     display:grid;
@@ -195,7 +195,7 @@
 
   .checkRow input{
     width:22px; height:22px;
-    accent-color:#6B5F59;
+    accent-color:var(--latte);
     margin-top:2px;
   }
 
@@ -337,7 +337,10 @@
       storeLine: "@179rnzsy",
       liffId: "2009601071-Rqc2suSI",
       googleScriptUrl: "https://script.google.com/macros/s/AKfycbxp51kNqpNqeSIPhgzcQRalJzgoowLnpKySBi57R0omy6wgYFxqaT41c26vMaruQUSY/exec",
-      sharedSecret: "055379690"
+      sharedSecret: "055379690",
+      storeVetName: "佑安動物醫院",
+      storeVetAddress: "雲林縣斗六市永安路110號",
+      storeVetPhone: "055321230"
     };
   </script>
 
@@ -778,6 +781,11 @@ ______________________________________________。
         <input id="medicalNote" class="input" placeholder="例：2021年疝氣手術、脂肪瘤手術等">
       </div>
 
+      <div class="vetPresetBox" style="margin-top:10px;">
+        備註：飼主應盡告知義務，若因隱瞞病況發生意外或死亡，<br>
+        經法定程序判定店家無疏失，店家不負損害賠償責任。
+      </div>
+
       <div class="label">審閱 / 簽署日期</div>
       <input type="text" id="signDate" class="input" readonly>
 
@@ -785,6 +793,12 @@ ______________________________________________。
       <div class="choiceRow" id="vetModeRow">
         <label class="choice"><input type="radio" name="vetMode" value="甲方指定" checked>甲方指定</label>
         <label class="choice"><input type="radio" name="vetMode" value="乙方指定">乙方指定鄰近動物醫院</label>
+      </div>
+
+      <div id="vetPresetWrap" class="vetPresetBox hidden">
+        <div>醫院名稱：<span id="storeVetNameText">XX動物醫院</span></div>
+        <div>醫院地址：<span id="storeVetAddressText">地址</span></div>
+        <div>醫院電話：<span id="storeVetPhoneText">電話</span></div>
       </div>
 
       <div id="vetDetailWrap">
@@ -841,11 +855,24 @@ ______________________________________________。
 
     const storeLineEl = document.getElementById("storeLineText");
     if(storeLineEl && CFG.storeLine) storeLineEl.textContent = CFG.storeLine;
+
+    const storeVetNameEl = document.getElementById("storeVetNameText");
+    if(storeVetNameEl) storeVetNameEl.textContent = CFG.storeVetName || "XX動物醫院";
+
+    const storeVetAddressEl = document.getElementById("storeVetAddressText");
+    if(storeVetAddressEl) storeVetAddressEl.textContent = CFG.storeVetAddress || "地址";
+
+    const storeVetPhoneEl = document.getElementById("storeVetPhoneText");
+    if(storeVetPhoneEl) storeVetPhoneEl.textContent = CFG.storeVetPhone || "電話";
   }catch(e){}
 
   const LIFF_ID = String(CFG.liffId || "");
   const GOOGLE_SCRIPT_URL = String(CFG.googleScriptUrl || "");
   const SHARED_SECRET = String(CFG.sharedSecret || "");
+  const STORE_VET_NAME = String(CFG.storeVetName || "XX動物醫院");
+  const STORE_VET_ADDRESS = String(CFG.storeVetAddress || "地址");
+  const STORE_VET_PHONE = String(CFG.storeVetPhone || "電話");
+  const MEDICAL_DISCLOSURE_NOTE = "飼主應盡告知義務，若因隱瞞病況發生意外或死亡，經法定程序判定店家無疏失，店家不負損害賠償責任。";
 
   const canvas = document.getElementById("sig");
   const clearBtn = document.getElementById("clear");
@@ -891,6 +918,7 @@ ______________________________________________。
   const otherWrap = document.getElementById("otherInjuryWrap");
   const otherText = document.getElementById("otherInjuryText");
 
+  const vetPresetWrap = document.getElementById("vetPresetWrap");
   const vetDetailWrap = document.getElementById("vetDetailWrap");
   const vetName = document.getElementById("vetName");
   const vetPhone = document.getElementById("vetPhone");
@@ -1011,8 +1039,13 @@ ______________________________________________。
   function refreshVet(){
     const mode = getRadio("vetMode");
     const isStore = (mode === "乙方指定");
+    setHidden(vetPresetWrap, !isStore);
     setHidden(vetDetailWrap, isStore);
     if(isStore){
+      if(vetName) vetName.value = STORE_VET_NAME;
+      if(vetPhone) vetPhone.value = STORE_VET_PHONE;
+      if(vetAddress) vetAddress.value = STORE_VET_ADDRESS;
+    }else{
       if(vetName) vetName.value = "";
       if(vetPhone) vetPhone.value = "";
       if(vetAddress) vetAddress.value = "";
@@ -1200,9 +1233,9 @@ ______________________________________________。
       otherInjuryNote,
 
       vetMode,
-      vetName: (vetMode === "甲方指定") ? requireValue(vetName, "動物醫院名稱") : "",
-      vetPhone: (vetMode === "甲方指定") ? requireValue(vetPhone, "動物醫院電話") : "",
-      vetAddress: (vetMode === "甲方指定") ? requireValue(vetAddress, "動物醫院地址") : ""
+      vetName: (vetMode === "甲方指定") ? requireValue(vetName, "動物醫院名稱") : STORE_VET_NAME,
+      vetPhone: (vetMode === "甲方指定") ? requireValue(vetPhone, "動物醫院電話") : STORE_VET_PHONE,
+      vetAddress: (vetMode === "甲方指定") ? requireValue(vetAddress, "動物醫院地址") : STORE_VET_ADDRESS
     };
 
     if(Object.values(data).some(v => v === null)){
@@ -1253,7 +1286,7 @@ ______________________________________________。
         : "無";
 
       const vetText = (data.vetMode === "乙方指定")
-        ? "乙方指定"
+        ? `乙方指定：${data.vetName} / ${data.vetPhone} / ${data.vetAddress}`
         : `甲方指定：${data.vetName} / ${data.vetPhone}`;
 
       const mhText = (data.medicalHistory && data.medicalHistory.length)
@@ -1301,6 +1334,7 @@ Email：${data.ownerEmail}
 病史：${mhText}
 ${otherInjuryTextLine}
 病史其他應注意：${noteText}
+病史備註：${MEDICAL_DISCLOSURE_NOTE}
 緊急就醫：${vetText}
 審閱/簽署日期：${data.signDate}
 
