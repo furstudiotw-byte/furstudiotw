@@ -1362,7 +1362,7 @@ if (!data.externalParasitePrevention) {
       const completeNote =
       "（簽署資料與簽名已完成。\n副本將寄送至Email。\n\n若有多隻毛孩，請為每隻毛孩分別填寫一份表單並各自送出。）";
 
-      const textMsg =
+            const textMsg =
 `【犬貓美容契約簽署資料】
 甲方姓名：${data.ownerName}
 聯絡電話：${data.ownerPhone}
@@ -1371,6 +1371,7 @@ if (!data.externalParasitePrevention) {
 Email：${data.ownerEmail}
 通訊地址：${data.ownerAddress}
 是否飼主本人：${data.isOwnerSelf}${data.ownerRelation ? "（關係：" + data.ownerRelation + "）" : ""}
+
 寵物名字：${data.petName}
 品種：${data.petBreed}
 性別：${data.petSex}
