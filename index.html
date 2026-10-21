@@ -646,14 +646,13 @@
 如寄生蟲情況已影響其他毛孩安全或營業秩序，本店得依專業判斷調整、延後或中止服務，且不視為違約。
 本人同意配合相關處理流程，並不因此提出異議。
 第 二十五 條 契約時效
-本契約有效期間為三十（30）日，自簽署日起算，期滿後本契約自動終止。
+本契約有效期間為六個月，自簽署日起算，期滿後本契約自動終止。
       
 第 二十六 條 (其他約定事項)
 ______________________________________________。
 立契約書人
 甲方(消費者)
 姓名：
-國民身分證統一編號或居留證號碼：
 聯絡電話：
 地址：
 乙方(企業經營者)
@@ -678,8 +677,7 @@ ______________________________________________。
       <div class="label">甲方姓名（飼主）</div>
       <input id="ownerName" class="input" placeholder="請輸入飼主姓名">
 
-      <div class="label">身分證字號</div>
-      <input id="ownerIdNo" class="input" placeholder="請輸入身分證字號">
+  
 
       <div class="label">聯絡電話</div>
       <input id="ownerPhone" class="input" inputmode="tel" placeholder="請輸入聯絡電話">
@@ -752,7 +750,19 @@ ______________________________________________。
         <div class="label">晶片號碼 <span style="color:var(--muted); font-weight:700; font-size:14px;">（選填）</span></div>
         <input id="chipNo" class="input" inputmode="numeric" pattern="[0-9]*" placeholder="晶片號碼">
       </div>
-
+<div class="label">本月是否有驅體外蟲</div>
+<div class="choiceRow">
+  <label class="choice">
+    <input type="radio" name="externalParasitePrevention" value="有"> 有
+  </label>
+  <label class="choice">
+    <input type="radio" name="externalParasitePrevention" value="無"> 無
+  </label>
+</div>
+<div style="margin-top:10px; color:#B4232C; font-size:14px; font-weight:800; line-height:1.7;">
+  ⚠️ 若未事先處理，導致跳蚤／壁蝨數量過多，或多次發現寄生蟲情形，
+  將酌收環境清潔費 NT$700。
+</div>
       <div class="label">體重（公斤）</div>
       <input id="petWeight" class="input" inputmode="decimal" placeholder="例：6.5">
 
@@ -921,7 +931,7 @@ ______________________________________________。
   const agree = document.getElementById("agree");
 
   const ownerName = document.getElementById("ownerName");
-  const ownerIdNo = document.getElementById("ownerIdNo");
+  
   const ownerPhone = document.getElementById("ownerPhone");
   const ownerEmail = document.getElementById("ownerEmail");
   const ownerAddress = document.getElementById("ownerAddress");
@@ -1245,7 +1255,7 @@ ______________________________________________。
       ownerEmail: requireValue(ownerEmail, "Email（寄送附本用）"),
       ownerIdNo: requireValue(ownerIdNo, "身分證字號"),
       ownerAddress: requireValue(ownerAddress, "通訊地址"),
-
+externalParasitePrevention: getRadio("externalParasitePrevention"),
       isOwnerSelf,
       ownerRelation: (isOwnerSelf === "否") ? requireValue(ownerRelation, "與飼主關係") : "",
 
@@ -1282,7 +1292,11 @@ ______________________________________________。
       resetSubmit();
       return;
     }
-
+if (!data.externalParasitePrevention) {
+  setError("請選擇：本月是否有驅體外蟲");
+  resetSubmit();
+  return;
+}
     if(!isValidDateString(data.petBirthday)){
       setError("寵物生日格式不正確，請輸入有效日期");
       petBirthday.focus();
