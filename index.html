@@ -1253,7 +1253,7 @@ ______________________________________________。
       emergencyName: requireValue(emergencyName, "緊急聯絡人"),
       emergencyPhone: requireValue(emergencyPhone, "緊急聯絡人電話"),
       ownerEmail: requireValue(ownerEmail, "Email（寄送附本用）"),
-      ownerIdNo: requireValue(ownerIdNo, "身分證字號"),
+   
       ownerAddress: requireValue(ownerAddress, "通訊地址"),
 externalParasitePrevention: getRadio("externalParasitePrevention"),
       isOwnerSelf,
@@ -1383,6 +1383,7 @@ Email：${data.ownerEmail}
 寵物個性：${ptText}
 個性其他應注意：${ptNoteText}
 晶片：${chipText}
+本月是否有驅體外蟲：${data.externalParasitePrevention}
 食物過敏：${allergyText}
 零食：${data.treatAllowed}
 病史：${mhText}
