@@ -336,8 +336,8 @@
       storeAddress: "雲林縣斗六市大同路71號",
       storeLine: "@179rnzsy",
       liffId: "2009601071-Rqc2suSI",
-      googleScriptUrl: "https://script.google.com/macros/s/AKfycby9KOZu8-YOa_dOxnpskuElkGVFQqNgUOh72w91OOiT-Rqi08UdDd1OdXaTay5Oxppi3A/exec",
-      sharedSecret: "055379690",
+      googleScriptUrl: "https://script.google.com/macros/s/AKfycbxbJ2C0PgNOyohlUQ_u3B1sfZeYbLGmGFm9VRhpvv_c-V7TO5FksxgkzZbOb9bmPEY_/exec",
+
       storeVetName: "佑安動物醫院",
       storeVetAddress: "雲林縣斗六市永安路110號",
       storeVetPhone: "055321230"
@@ -917,8 +917,8 @@ ______________________________________________。
   }catch(e){}
 
   const LIFF_ID = String(CFG.liffId || "2009601071-Rqc2suSI");
-  const GOOGLE_SCRIPT_URL = String(CFG.googleScriptUrl || "https://script.google.com/macros/s/AKfycbwGdA8oOEVoTd4kY0hMfMypPUJf0XqVq04cgDIiogYG0gcc6Qp5pMg3CV_z43ufU8esHQ/exec");
-  const SHARED_SECRET = String(CFG.sharedSecret || "055379690");
+  const GOOGLE_SCRIPT_URL = String(CFG.googleScriptUrl || "https://script.google.com/macros/s/AKfycbxbJ2C0PgNOyohlUQ_u3B1sfZeYbLGmGFm9VRhpvv_c-V7TO5FksxgkzZbOb9bmPEY_/exec");
+
   const STORE_VET_NAME = String(CFG.storeVetName || "XX動物醫院");
   const STORE_VET_ADDRESS = String(CFG.storeVetAddress || "地址");
   const STORE_VET_PHONE = String(CFG.storeVetPhone || "電話");
@@ -1400,7 +1400,10 @@ ${completeNote}`;
       const contractText = (document.getElementById("contractText")?.innerText || "").trim();
       const signatureDataUrl = canvas.toDataURL("image/png");
 
-      if(GOOGLE_SCRIPT_URL && SHARED_SECRET){
+      let contractResult = null;
+      if(GOOGLE_SCRIPT_URL){
+        const idToken = liff.getIDToken();
+        if (!idToken) throw new Error("LINE 登入驗證未就緒，請重新開啟契約；店家請確認 LIFF 已勾選 openid。");
         let res;
         let result = {};
 
@@ -1409,7 +1412,7 @@ ${completeNote}`;
             method: "POST",
             headers: { "Content-Type": "text/plain;charset=UTF-8" },
             body: JSON.stringify({
-              secret: SHARED_SECRET,
+              idToken,
               data,
               signatureDataUrl,
               line: {
@@ -1429,14 +1432,18 @@ ${completeNote}`;
           throw new Error("伺服器回傳格式異常，請聯絡店家");
         }
 
-        if(!res.ok || !result.ok){
+        if(!res.ok || !result.ok || result.mailSent !== true){
           throw new Error(result.error || "副本寄送失敗，請稍後再試");
         }
+        contractResult = result;
       }
 
-      await liff.sendMessages([{ type:"text", text:textMsg }]);
+      let lineReceiptSent = true;
+      try { await liff.sendMessages([{ type:"text", text:textMsg }]); } catch (_) { lineReceiptSent = false; }
 
-      setOK("資料已送出！\n可以回到聊天室了！");
+      if (!contractResult) throw new Error("契約接收網址未設定，請聯絡店家。");
+      const syncText = contractResult.syncStatus === "done" ? "店家後台已同步。" : "店家後台同步待處理，店家將核對；不用重複簽署。";
+      setOK("契約副本已寄出。\n" + syncText + (lineReceiptSent ? "\n可以回到聊天室了！" : "\nLINE 確認訊息未送出，請告知店家；不用重複送出契約。"));
       submitBtn.disabled = true;
       submitBtn.textContent = "已送出";
 
